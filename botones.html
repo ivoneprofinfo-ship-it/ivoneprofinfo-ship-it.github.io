@@ -1,0 +1,298 @@
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdn.simplecss.org/simple.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 100%;
+        height: 100vh;
+        background: url(https://picsum.photos/800/600);
+        background-size: cover;
+      }
+
+      main {
+        min-height: 80vh;
+        padding: 20px;
+        color: white;
+        font-size: 24px;
+        text-shadow: 1px 1px 3px black;
+      }
+
+      nav button {
+        margin: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Un sitio web Power</h1>
+      <nav>
+        <button id="idBotonReiniciar">
+          Reiniciar
+        </button>
+
+        <button id="idBotonCerrarApp">
+          Cerrar la app
+        </button>
+
+        <button id="idBotonBuscador">
+          Abrir el buscador
+        </button>
+
+        <button id="idBotonPreguntar">
+          Preguntar en Wiki
+        </button>
+
+        <button id="idBotonCambiarFondo">
+          Cambiar fondo a los botones
+        </button>
+
+        <button id="idBotonMostrarHora">
+          Mostrar hora
+        </button>
+
+        <button id="idBotonSonarMusica">
+          Sonar música
+        </button>
+
+        <button id="idBotonGenerarAzar">
+          Generar aleatorio
+        </button>
+
+        <button id="idBotonAnimarColores">
+          Animar colores
+        </button>
+
+        <button id="idBotonCancelar" style="background: red;">
+          Cancelar animación
+        </button>
+      </nav>
+    </header>
+
+    <audio
+      controls
+      id="idAudio1"
+      src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+    </audio>
+
+    <main id="idMain">
+      Próximamente
+    </main>
+
+    <script>
+      var _timer1 = null;
+      var _sonando = false;
+
+      idBotonReiniciar.onclick = fnClickReiniciar;
+      idBotonCerrarApp.onclick = fnClickCerrarApp;
+      idBotonBuscador.onclick = fnClickBuscador;
+      idBotonPreguntar.onclick = fnClickPreguntar;
+      idBotonCambiarFondo.onclick = fnClickCambiarFondo;
+      idBotonMostrarHora.onclick = fnClickMostrarHora;
+      idBotonSonarMusica.onclick = fnClickSonarMusica;
+      idBotonGenerarAzar.onclick = fnClickGenerarAzar;
+      idBotonAnimarColores.onclick = fnClickAnimarColores;
+      idBotonCancelar.onclick = fnClickCancelar;
+
+      function fnClickReiniciar()
+      {
+        console.log("Reiniciar");
+        var _decision = confirm("¿Querés reiniciar la página?");
+        if( _decision == true )
+        {
+          location.reload();
+        }
+        return;
+      }
+
+      function fnClickCerrarApp()
+      {
+        console.log("Cerrar ventana");
+        var _decision = confirm("¿Querés cerrar la ventana?");
+        if( _decision == true )
+        {
+          window.close();
+        }
+        return;
+      }
+
+      function fnClickBuscador()
+      {
+        console.log("Abrir buscador");
+        var _queBuscar = prompt("¿Qué buscás?");
+        if( _queBuscar != null )
+        {
+          location.href = "https://google.com/search?q=" + _queBuscar;
+        }
+
+        return;
+      }
+
+      function fnClickPreguntar()
+      {
+        console.log("Abrir Wikipedia");
+        var _tema = prompt("¿Qué tema querés buscar?");
+        if( _tema != null )
+        {
+          _tema = _tema.replace(" ", "_");
+          location.href = "https://es.wikipedia.org/wiki/" + _tema;
+        }
+
+        return;
+      }
+
+      function fnClickCambiarFondo()
+      {
+        console.log("Cambiar color");
+        var _color = prompt("Escribí un color: rojo, azul, verde");
+        if( _color != null )
+        {
+          if( _color == "rojo" )
+          {
+            _color = "red";
+          }
+          if( _color == "azul" )
+          {
+            _color = "blue";
+          }
+
+          if( _color == "verde" )
+          {
+            _color = "green";
+          }
+
+          idBotonReiniciar.style.background = _color;
+          idBotonCerrarApp.style.background = _color;
+          idBotonBuscador.style.background = _color;
+          idBotonPreguntar.style.background = _color;
+          idBotonCambiarFondo.style.background = _color;
+          idBotonMostrarHora.style.background = _color;
+          idBotonSonarMusica.style.background = _color;
+          idBotonGenerarAzar.style.background = _color;
+          idBotonAnimarColores.style.background = _color;
+        }
+        return;
+      }
+      function fnClickMostrarHora()
+      {
+        console.log("Mostrar hora");
+        var _horaActual = new Date();
+        var _hora = _horaActual.getHours();
+        var _minutos = _horaActual.getMinutes();
+        if( _hora < 10 )
+        {
+          _hora = "0" + _hora;
+        }
+        if( _minutos < 10 )
+        {
+          _minutos = "0" + _minutos;
+        }
+        alert("La hora actual es: " + _hora + ":" + _minutos);
+        return;
+      }
+      function fnClickSonarMusica()
+      {
+        console.log("Sonar música");
+        if( _sonando == false )
+        {
+          idAudio1.play();
+          _sonando = true;
+          idBotonSonarMusica.innerHTML = "Pausar música";
+        }
+        else
+        {
+          idAudio1.pause();
+          _sonando = false;
+          idBotonSonarMusica.innerHTML = "Sonar música";
+        }
+        return;
+      }
+      function fnClickGenerarAzar()
+      {
+        console.log("Generar aleatorio");
+        var _numeroMaximo = prompt("Ingresá un número máximo");
+        _numeroMaximo = parseInt(_numeroMaximo);
+
+        if( isNaN(_numeroMaximo) == false )
+        {
+          var _aleatorio = Math.random() * (_numeroMaximo + 1);
+          var _aleatorioEntero = parseInt(_aleatorio);
+          alert("Número aleatorio: " + _aleatorioEntero);
+        }
+        return;
+      }
+      function fnClickAnimarColores()
+      {
+        console.log("Animar colores");
+        fnAnimar1();
+       return;
+      }
+
+      function fnAnimar1()
+      {
+        idBotonReiniciar.style.background = "red";
+        idBotonCerrarApp.style.background = "orange";
+        idBotonBuscador.style.background = "yellow";
+        idBotonPreguntar.style.background = "green";
+        idBotonCambiarFondo.style.background = "blue";
+        idBotonMostrarHora.style.background = "purple";
+        idBotonSonarMusica.style.background = "pink";
+        idBotonGenerarAzar.style.background = "brown";
+        idBotonAnimarColores.style.background = "black";
+
+        _timer1 = setTimeout(fnAnimar2, 500);
+        return;
+      }
+
+      function fnAnimar2()
+      {
+        idBotonReiniciar.style.background = "blue";
+        idBotonCerrarApp.style.background = "green";
+        idBotonBuscador.style.background = "red";
+        idBotonPreguntar.style.background = "purple";
+        idBotonCambiarFondo.style.background = "orange";
+        idBotonMostrarHora.style.background = "black";
+        idBotonSonarMusica.style.background = "yellow";
+        idBotonGenerarAzar.style.background = "pink";
+        idBotonAnimarColores.style.background = "brown";
+
+        _timer1 = setTimeout(fnAnimar3, 500);
+        return;
+      }
+
+      function fnAnimar3()
+      {
+        idBotonReiniciar.style.background = "green";
+        idBotonCerrarApp.style.background = "red";
+        idBotonBuscador.style.background = "purple";
+        idBotonPreguntar.style.background = "yellow";
+        idBotonCambiarFondo.style.background = "pink";
+        idBotonMostrarHora.style.background = "blue";
+        idBotonSonarMusica.style.background = "orange";
+        idBotonGenerarAzar.style.background = "black";
+        idBotonAnimarColores.style.background = "brown";
+
+        _timer1 = setTimeout(fnAnimar1, 500);
+        return;
+      }
+
+      function fnClickCancelar()
+      {
+        console.log("Cancelar animación");
+        clearTimeout(_timer1);
+        alert("Animación cancelada");
+        return;
+      }
+    </script>
+  </body>
+</html>
