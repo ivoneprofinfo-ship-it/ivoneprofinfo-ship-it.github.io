@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WhatsApp</title>
+
+  <!-- jQuery Mobile -->
+  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+  <style>
+    /* Header verde WhatsApp */
+    .ui-header {
+      background: #075E54 !important;
+      border: none !important;
+    }
+    .ui-header .ui-title {
+      color: #fff !important;
+      font-size: 1.25em;
+      letter-spacing: 0.5px;
+    }
+    .ui-header .ui-btn {
+      color: #fff !important;
+    }
+
+    /* Tabs (Chats / Estado / Llamadas) */
+    .wa-tabs {
+      display: flex;
+      background: #075E54;
+      border-bottom: 2px solid #128C7E;
+    }
+    .wa-tabs a {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.85em;
+      font-weight: bold;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .wa-tabs a.active {
+      color: #fff;
+      border-bottom: 3px solid #25D366;
+    }
+
+    /* Buscador */
+    .wa-search {
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      padding: 6px 12px;
+      gap: 8px;
+    }
+    .wa-search input {
+      flex: 1;
+      border: none;
+      background: #fff;
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-size: 0.9em;
+      outline: none;
+      color: #333;
+    }
+
+    /* Lista de chats */
+    .chat-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .chat-item:active {
+      background: #f5f5f5;
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .av1  { background: #e53935; }
+    .av2  { background: #8e24aa; }
+    .av3  { background: #1e88e5; }
+    .av4  { background: #00897b; }
+    .av5  { background: #f4511e; }
+    .av6  { background: #039be5; }
+    .av7  { background: #7cb342; }
+    .av8  { background: #fb8c00; }
+    .av9  { background: #c0ca33; }
+    .av10 { background: #6d4c41; }
+    .av11 { background: #546e7a; }
+    .av12 { background: #d81b60; }
+
+    /* Contenido del chat */
+    .chat-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .chat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+    .chat-name {
+      font-weight: bold;
+      font-size: 0.97em;
+      color: #111;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+    .chat-time {
+      font-size: 0.75em;
+      color: #999;
+      flex-shrink: 0;
+    }
+    .chat-time.unread {
+      color: #25D366;
+      font-weight: bold;
+    }
+    .chat-preview {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-msg {
+      font-size: 0.83em;
+      color: #666;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 210px;
+    }
+    .chat-msg .tick {
+      color: #53bdeb;
+      margin-right: 2px;
+    }
+    .chat-msg .tick.grey {
+      color: #aaa;
+    }
+    .badge {
+      background: #25D366;
+      color: #fff;
+      border-radius: 50%;
+      min-width: 20px;
+      height: 20px;
+      font-size: 0.72em;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0 4px;
+    }
+    .muted .badge {
+      background: #aaa;
+    }
+    .muted .chat-time {
+      color: #aaa;
+    }
+
+    /* Silenciado */
+    .mute-icon {
+      color: #aaa;
+      font-size: 0.85em;
+      margin-right: 3px;
+    }
+
+    /* FAB */
+    .fab {
+      position: fixed;
+      bottom: 72px;
+      right: 18px;
+      width: 56px;
+      height: 56px;
+      background: #25D366;
+      color: white;
+      border-radius: 50%;
+      font-size: 1.6em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 999;
+      text-decoration: none;
+    }
+
+    /* Footer navbar */
+    .ui-footer {
+      background: #fff !important;
+      border-top: 1px solid #ddd !important;
+    }
+    .ui-navbar a {
+      color: #666 !important;
+      font-size: 0.78em;
+    }
+    .ui-navbar a.ui-btn-active {
+      color: #075E54 !important;
+      background: transparent !important;
+      border: none !important;
+    }
+
+    /* Sin padding extra en content */
+    .ui-content {
+      padding: 0 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div data-role="page" id="whatsapp">
+
+  <div data-role="header" data-position="fixed">
+    <h1>WhatsApp</h1>
+    <a href="#" class="ui-btn ui-btn-right ui-btn-icon-notext ui-icon-search">Buscar</a>
+  </div>
+
+  <div data-role="content">
+
+    <!-- Tabs -->
+    <div class="wa-tabs">
+      <a href="#">&#128247; Estado</a>
+      <a href="#" class="active">&#128172; Chats</a>
+      <a href="#">&#128222; Llamadas</a>
+    </div>
+
+    <!-- Buscador -->
+    <div class="wa-search">
+      <span>&#128269;</span>
+      <input type="text" placeholder="Buscar o empezar un chat">
+    </div>
+
+    <!-- Lista de chats -->
+    <ul class="chat-list">
+
+      <!-- Chat 1 - no leído -->
+      <li class="chat-item">
+        <div class="avatar av1">M</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Mamá 👩</span>
+            <span class="chat-time unread">19:45</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg">¿Ya llegaste a casa? Avisá cuando puedas 🏠</span>
+            <span class="badge">3</span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 2 - grupo -->
+      <li class="chat-item">
+        <div class="avatar av2">🎓</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Facu del Profe 🎓</span>
+            <span class="chat-time unread">19:30</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><b>Sofía:</b> ¿Alguien tiene la tarea de jQuery?</span>
+            <span class="badge">12</span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 3 - leído -->
+      <li class="chat-item">
+        <div class="avatar av3">A</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Agustín</span>
+            <span class="chat-time">18:55</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><span class="tick">✓✓</span> Dale, mañana nos juntamos</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 4 - grupo -->
+      <li class="chat-item">
+        <div class="avatar av4">🏠</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Casa ❤️</span>
+            <span class="chat-time">18:20</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><b>Papá:</b> Traigan pan cuando vuelvan</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 5 - no leído -->
+      <li class="chat-item">
+        <div class="avatar av5">L</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Laura 💜</span>
+            <span class="chat-time unread">17:40</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg">jajaja no lo puedo creer 😂😂😂</span>
+            <span class="badge">5</span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 6 - leído -->
+      <li class="chat-item">
+        <div class="avatar av6">C</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Carlos</span>
+            <span class="chat-time">16:15</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><span class="tick">✓✓</span> Gracias por el dato 👍</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 7 - silenciado -->
+      <li class="chat-item muted">
+        <div class="avatar av7">🎮</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name"><span class="mute-icon">🔇</span>Gamer Squad</span>
+            <span class="chat-time">15:00</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><b>Nico:</b> ¿Jugamos esta noche?</span>
+            <span class="badge">8</span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 8 -->
+      <li class="chat-item">
+        <div class="avatar av8">R</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Rodrigo 🤙</span>
+            <span class="chat-time">13:30</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><span class="tick">✓✓</span> Perfecto, nos vemos el sábado</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 9 - foto -->
+      <li class="chat-item">
+        <div class="avatar av9">V</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Vale</span>
+            <span class="chat-time">Ayer</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg">📷 Foto</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 10 -->
+      <li class="chat-item">
+        <div class="avatar av10">P</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Profe Informática</span>
+            <span class="chat-time">Ayer</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><span class="tick grey">✓</span> Entreguen antes del viernes</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 11 - grupo -->
+      <li class="chat-item">
+        <div class="avatar av11">⚽</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Fútbol Domingo ⚽</span>
+            <span class="chat-time">Lun.</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg"><b>Tomi:</b> Confirmados: 8. Faltan 3 más</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Chat 12 -->
+      <li class="chat-item">
+        <div class="avatar av12">N</div>
+        <div class="chat-body">
+          <div class="chat-top">
+            <span class="chat-name">Natalia</span>
+            <span class="chat-time">Dom.</span>
+          </div>
+          <div class="chat-preview">
+            <span class="chat-msg">🎵 Audio · 0:24</span>
+            <span></span>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+
+  </div><!-- /content -->
+
+  <!-- FAB nuevo chat -->
+  <a class="fab" title="Nuevo chat">&#128172;</a>
+
+  <!-- Footer -->
+  <div data-role="footer" data-position="fixed">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#" data-icon="home">Estado</a></li>
+        <li><a href="#" data-icon="comment" class="ui-btn-active">Chats</a></li>
+        <li><a href="#" data-icon="phone">Llamadas</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contactos</title>
+
+  <!-- jQuery Mobile -->
+  <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+  <style>
+    /* Barra superior */
+    .ui-header .ui-title {
+      font-size: 1.2em;
+      letter-spacing: 1px;
+    }
+
+    /* Barra de búsqueda */
+    .ui-listview-filter {
+      margin: 0;
+    }
+
+    /* Avatar circular */
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #fff;
+      float: left;
+      margin-right: 10px;
+      margin-top: 2px;
+    }
+
+    /* Colores por letra */
+    .c-a { background: #e53935; }
+    .c-b { background: #8e24aa; }
+    .c-c { background: #1e88e5; }
+    .c-d { background: #00897b; }
+    .c-e { background: #f4511e; }
+    .c-f { background: #039be5; }
+    .c-g { background: #7cb342; }
+    .c-j { background: #fb8c00; }
+    .c-l { background: #c0ca33; }
+    .c-m { background: #6d4c41; }
+    .c-n { background: #546e7a; }
+    .c-p { background: #d81b60; }
+    .c-r { background: #00acc1; }
+    .c-s { background: #5e35b1; }
+    .c-v { background: #43a047; }
+
+    /* Info del contacto */
+    .contact-info {
+      overflow: hidden;
+    }
+    .contact-name {
+      font-size: 1em;
+      font-weight: bold;
+      color: #212121;
+    }
+    .contact-phone {
+      font-size: 0.82em;
+      color: #757575;
+    }
+
+    /* Separadores de letra */
+    .ui-li-divider {
+      background: #f5f5f5 !important;
+      color: #1e88e5 !important;
+      font-weight: bold;
+      font-size: 0.95em;
+    }
+
+    /* Íconos de acción */
+    .action-icons {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 14px;
+    }
+    .action-icons a {
+      color: #1e88e5;
+      font-size: 1.3em;
+      text-decoration: none;
+    }
+    .action-icons a:hover {
+      color: #0d47a1;
+    }
+
+    /* Ítem de contacto */
+    .ui-li-static {
+      padding: 10px 100px 10px 16px !important;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* FAB botón agregar */
+    .fab {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: #1e88e5;
+      color: white;
+      border-radius: 50%;
+      font-size: 2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 999;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .fab:hover {
+      background: #1565c0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- PÁGINA PRINCIPAL: Lista de Contactos -->
+<div data-role="page" id="contactos">
+
+  <div data-role="header" data-theme="b">
+    <h1>&#128100; Contactos</h1>
+  </div>
+
+  <div data-role="content">
+    <ul data-role="listview" data-filter="true" data-filter-placeholder="Buscar contacto..." data-inset="false" id="lista-contactos">
+
+      <!-- A -->
+      <li data-role="list-divider">A</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-a">A</div>
+        <div class="contact-info">
+          <div class="contact-name">Agustina Ramírez</div>
+          <div class="contact-phone">+54 11 2234-5678</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+5411223456789" title="Llamar">&#128222;</a>
+          <a href="sms:+5411223456789" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-a">A</div>
+        <div class="contact-info">
+          <div class="contact-name">Alejandro Torres</div>
+          <div class="contact-phone">+54 9 351 456-7890</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+543514567890" title="Llamar">&#128222;</a>
+          <a href="sms:+543514567890" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- B -->
+      <li data-role="list-divider">B</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-b">B</div>
+        <div class="contact-info">
+          <div class="contact-name">Brenda Suárez</div>
+          <div class="contact-phone">+54 9 261 789-0123</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+542617890123" title="Llamar">&#128222;</a>
+          <a href="sms:+542617890123" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- C -->
+      <li data-role="list-divider">C</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-c">C</div>
+        <div class="contact-info">
+          <div class="contact-name">Carlos Mendoza</div>
+          <div class="contact-phone">+54 11 5678-9012</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+5411567890" title="Llamar">&#128222;</a>
+          <a href="sms:+5411567890" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-c">C</div>
+        <div class="contact-info">
+          <div class="contact-name">Camila Ortega</div>
+          <div class="contact-phone">+54 9 341 234-5678</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+543412345678" title="Llamar">&#128222;</a>
+          <a href="sms:+543412345678" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- D -->
+      <li data-role="list-divider">D</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-d">D</div>
+        <div class="contact-info">
+          <div class="contact-name">Diego Fernández</div>
+          <div class="contact-phone">+54 9 11 6789-0123</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+5491167890123" title="Llamar">&#128222;</a>
+          <a href="sms:+5491167890123" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- F -->
+      <li data-role="list-divider">F</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-f">F</div>
+        <div class="contact-info">
+          <div class="contact-name">Florencia López</div>
+          <div class="contact-phone">+54 9 223 345-6789</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+542233456789" title="Llamar">&#128222;</a>
+          <a href="sms:+542233456789" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- G -->
+      <li data-role="list-divider">G</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-g">G</div>
+        <div class="contact-info">
+          <div class="contact-name">Gonzalo Herrera</div>
+          <div class="contact-phone">+54 9 11 7890-1234</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+5491178901234" title="Llamar">&#128222;</a>
+          <a href="sms:+5491178901234" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- J -->
+      <li data-role="list-divider">J</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-j">J</div>
+        <div class="contact-info">
+          <div class="contact-name">Juliana Vega</div>
+          <div class="contact-phone">+54 9 387 456-7891</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+543874567891" title="Llamar">&#128222;</a>
+          <a href="sms:+543874567891" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-j">J</div>
+        <div class="contact-info">
+          <div class="contact-name">Juan Pérez</div>
+          <div class="contact-phone">+54 9 299 890-1234</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+542998901234" title="Llamar">&#128222;</a>
+          <a href="sms:+542998901234" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- L -->
+      <li data-role="list-divider">L</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-l">L</div>
+        <div class="contact-info">
+          <div class="contact-name">Lucía Castro</div>
+          <div class="contact-phone">+54 9 351 012-3456</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+543510123456" title="Llamar">&#128222;</a>
+          <a href="sms:+543510123456" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- M -->
+      <li data-role="list-divider">M</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-m">M</div>
+        <div class="contact-info">
+          <div class="contact-name">Martina Gómez</div>
+          <div class="contact-phone">+54 9 11 2345-6789</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+5491123456789" title="Llamar">&#128222;</a>
+          <a href="sms:+5491123456789" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-m">M</div>
+        <div class="contact-info">
+          <div class="contact-name">Miguel Soria</div>
+          <div class="contact-phone">+54 9 264 678-9012</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+542646789012" title="Llamar">&#128222;</a>
+          <a href="sms:+542646789012" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- N -->
+      <li data-role="list-divider">N</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-n">N</div>
+        <div class="contact-info">
+          <div class="contact-name">Natalia Ríos</div>
+          <div class="contact-phone">+54 9 381 901-2345</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+543819012345" title="Llamar">&#128222;</a>
+          <a href="sms:+543819012345" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- P -->
+      <li data-role="list-divider">P</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-p">P</div>
+        <div class="contact-info">
+          <div class="contact-name">Pablo Núñez</div>
+          <div class="contact-phone">+54 9 11 3456-7890</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+5491134567890" title="Llamar">&#128222;</a>
+          <a href="sms:+5491134567890" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- R -->
+      <li data-role="list-divider">R</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-r">R</div>
+        <div class="contact-info">
+          <div class="contact-name">Romina Álvarez</div>
+          <div class="contact-phone">+54 9 341 567-8901</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+543415678901" title="Llamar">&#128222;</a>
+          <a href="sms:+543415678901" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- S -->
+      <li data-role="list-divider">S</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-s">S</div>
+        <div class="contact-info">
+          <div class="contact-name">Santiago Blanco</div>
+          <div class="contact-phone">+54 9 261 890-1234</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+542618901234" title="Llamar">&#128222;</a>
+          <a href="sms:+542618901234" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-s">S</div>
+        <div class="contact-info">
+          <div class="contact-name">Sofía Medina</div>
+          <div class="contact-phone">+54 9 11 4567-8901</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+5491145678901" title="Llamar">&#128222;</a>
+          <a href="sms:+5491145678901" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+      <!-- V -->
+      <li data-role="list-divider">V</li>
+
+      <li class="ui-li-static">
+        <div class="avatar c-v">V</div>
+        <div class="contact-info">
+          <div class="contact-name">Valentina Cruz</div>
+          <div class="contact-phone">+54 9 299 123-4567</div>
+        </div>
+        <div class="action-icons">
+          <a href="tel:+542991234567" title="Llamar">&#128222;</a>
+          <a href="sms:+542991234567" title="Mensaje">&#128172;</a>
+        </div>
+      </li>
+
+    </ul>
+  </div><!-- /content -->
+
+  <!-- Botón flotante agregar -->
+  <a class="fab" title="Agregar contacto">&#43;</a>
+
+  <div data-role="footer" data-position="fixed" data-theme="b">
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#" class="ui-btn-active" data-icon="home">Contactos</a></li>
+        <li><a href="#" data-icon="star">Favoritos</a></li>
+        <li><a href="#" data-icon="grid">Grupos</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>
