@@ -17,22 +17,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
     .ui-header h1 {
       color: #ffffff !important;
       font-size: 22px;
       margin: 0;
-    }
-    .ui-header .ui-btn-left {
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      background: white !important;
-      color: #0077cc !important;
-      border: none !important;
-      border-radius: 8px !important;
-      font-weight: bold;
     }
     .ui-footer {
       background-color: #0077cc !important;
@@ -41,7 +30,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 20px;
     }
     .ui-footer h4 {
       color: #ffffff !important;
@@ -76,19 +64,22 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       min-height: 40px;
     }
+
+    /* Colores: violet, pink, blue */
     #colorear {
       height: 300px;
-      background-color: #0077cc;
+      background-color: blue;
       border-radius: 12px;
       margin: 10px auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
       color: white;
       transition: background 0.5s ease;
     }
+
     #idAreaChat {
       background: teal;
       border-radius: 12px;
@@ -126,7 +117,7 @@
       flex: 1;
     }
 
-    /* Frame de búsqueda */
+    /* Frame búsqueda */
     #idBuscadorFrame {
       display: none;
       width: 100%;
@@ -155,9 +146,8 @@
 
   <div data-role="page" id="inicio">
 
+    <!-- Header sin botón Volver -->
     <div data-role="header" data-theme="b">
-      <a href="#" onclick="fnVolver()"
-         class="ui-btn ui-btn-left ui-btn-inline ui-mini">← Volver</a>
       <h1>✨ Mi Chat Bot</h1>
     </div>
 
@@ -169,6 +159,7 @@
         <div id="idAsistente">🧞</div>
         <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
 
+        <!-- Caja agitador: violet, pink, blue -->
         <div id="colorear">🤳 ¡Agitame!</div>
 
         <div id="idAreaChat">
@@ -183,7 +174,7 @@
 
       </div>
 
-      <!-- Google adentro con botón volver -->
+      <!-- Google en iframe con botón volver -->
       <div id="idBuscadorFrame">
         <button id="btnCerrarFrame" onclick="fnCerrarFrame()">
           ← Volver al Chat Bot
@@ -200,6 +191,55 @@
   </div>
 
   <script>
+
+    // =========================
+    // AGITADOR DESDE APP INVENTOR
+    // Bloque App Inventor:
+    // call WebViewer1.GoToUrl url "javascript:fnAgitador()"
+    // =========================
+    function fnAgitador() {
+      console.log("Agitado!");
+
+      // Los tres colores pedidos en inglés
+      var colores = ["violet", "pink", "blue"];
+      var color   = colores[Math.floor(Math.random() * colores.length)];
+
+      var colorear = document.getElementById("colorear");
+      var burbuja  = document.getElementById("idBurbuja");
+
+      // Cambia el color con el nombre en inglés
+      colorear.style.background = color;
+      colorear.innerText = "🎨 " + color.toUpperCase() + "!";
+      burbuja.innerText  = "🎨 Color: " + color;
+
+      // Vuelve a blue después de 3 segundos
+      setTimeout(function () {
+        colorear.style.background = "blue";
+        colorear.innerText = "🤳 ¡Agitame!";
+      }, 3000);
+    }
+
+    // =========================
+    // RECIBIR TEXTO DESDE APP INVENTOR
+    // Bloque App Inventor con SpeechRecognizer:
+    // call WebViewer1.GoToUrl
+    //   url join "javascript:fnTextoDesdeApp('" result "')"
+    // =========================
+    function fnTextoDesdeApp(texto) {
+      console.log("Desde App Inventor: " + texto);
+      document.getElementById("idUsuario").value = texto;
+
+      var colorear = document.getElementById("colorear");
+      colorear.style.background = "violet";
+      colorear.innerText = "🎤 " + texto;
+
+      setTimeout(function () {
+        colorear.style.background = "blue";
+        colorear.innerText = "🤳 ¡Agitame!";
+      }, 2000);
+
+      fnResponder(texto);
+    }
 
     // =========================
     // RESPUESTAS DEL ASISTENTE
@@ -254,7 +294,6 @@
         respuesta = chistes[Math.floor(Math.random() * chistes.length)];
 
       } else {
-        // Busca en Google dentro del iframe
         respuesta = "Buscando \"" + texto + "\" en Google... 🔍";
         document.getElementById("idBurbuja").innerText = respuesta;
         fnHablar("Buscando " + texto + " en Google");
@@ -270,7 +309,7 @@
     }
 
     // =========================
-    // ABRIR BÚSQUEDA EN IFRAME
+    // ABRIR GOOGLE EN IFRAME
     // =========================
     function fnAbrirFrame(url) {
       document.getElementById("idContenido").style.display = "none";
@@ -279,7 +318,7 @@
     }
 
     // =========================
-    // CERRAR IFRAME Y VOLVER
+    // CERRAR IFRAME
     // =========================
     function fnCerrarFrame() {
       document.getElementById("idBuscadorFrame").style.display = "none";
@@ -312,7 +351,7 @@
       fnResponder(texto);
     });
 
-    // Enter en el input
+    // Enter en input
     document.getElementById("idUsuario").addEventListener("keypress", function(e) {
       if (e.key === "Enter") {
         var texto = document.getElementById("idUsuario").value.trim();
@@ -322,129 +361,24 @@
 
     // =========================
     // BOTÓN MICRÓFONO
+    // Nota: en WebViewer de App Inventor el micrófono
+    // está bloqueado por seguridad de Android.
+    // Usá SpeechRecognizer en App Inventor y
+    // conectalo con fnTextoDesdeApp()
     // =========================
     document.getElementById("idBotonMic").addEventListener("click", function () {
-      fnEscuchar();
+      var burbuja  = document.getElementById("idBurbuja");
+      var colorear = document.getElementById("colorear");
+
+      burbuja.innerText = "🎤 Usá el botón de micrófono en App Inventor para hablar.";
+      colorear.style.background = "pink";
+      colorear.innerText = "🎤 Hablá en App Inventor";
+
+      setTimeout(function () {
+        colorear.style.background = "blue";
+        colorear.innerText = "🤳 ¡Agitame!";
+      }, 3000);
     });
-
-    // =========================
-    // FUNCIÓN ESCUCHAR
-    // =========================
-    function fnEscuchar(colorEscucha) {
-      var colorear = document.getElementById("colorear");
-      var burbuja  = document.getElementById("idBurbuja");
-      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-      if (!SR) {
-        burbuja.innerText = "🎤 Micrófono no disponible. Escribí tu consulta.";
-        colorear.style.background = "#e91e63";
-        colorear.innerText = "⌨️ Escribí abajo";
-        setTimeout(function() {
-          colorear.style.background = "#0077cc";
-          colorear.innerText = "🤳 ¡Agitame!";
-        }, 3000);
-        return;
-      }
-
-      var recognition = new SR();
-      recognition.lang = "es-AR";
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      burbuja.innerText = "🎤 Escuchando...";
-      colorear.style.background = colorEscucha || "#9c27b0";
-      colorear.innerText = "🎤 Escuchando...";
-
-      recognition.onresult = function (event) {
-        var texto = event.results[0][0].transcript;
-        console.log("Escuché: " + texto);
-        document.getElementById("idUsuario").value = texto;
-        fnResponder(texto);
-        colorear.style.background = "#0077cc";
-        colorear.innerText = "🤳 ¡Agitame!";
-      };
-
-      recognition.onerror = function (event) {
-        console.log("Error mic: " + event.error);
-        if (event.error === "not-allowed") {
-          burbuja.innerText = "⚠️ Permiso de micrófono denegado. En App Inventor usá el componente SpeechRecognizer.";
-        } else if (event.error === "no-speech") {
-          burbuja.innerText = "No escuché ninguna voz. Intentá de nuevo.";
-        } else if (event.error === "audio-capture") {
-          burbuja.innerText = "No se encontró micrófono.";
-        } else if (event.error === "network") {
-          burbuja.innerText = "Problema de red con el micrófono.";
-        } else {
-          burbuja.innerText = "No te escuché bien. Intentá de nuevo.";
-        }
-        colorear.style.background = "#0077cc";
-        colorear.innerText = "🤳 ¡Agitame!";
-      };
-
-      recognition.onend = function() {
-        colorear.style.background = "#0077cc";
-        colorear.innerText = "🤳 ¡Agitame!";
-      };
-
-      try {
-        recognition.start();
-      } catch (e) {
-        burbuja.innerText = "Error al iniciar el micrófono.";
-        colorear.style.background = "#0077cc";
-        colorear.innerText = "🤳 ¡Agitame!";
-      }
-    }
-
-    // =========================
-    // AGITADOR DESDE APP INVENTOR
-    // Bloque en App Inventor:
-    // call WebViewer1.GoToUrl url "javascript:fnAgitador()"
-    // =========================
-    function fnAgitador() {
-      console.log("Teléfono agitado");
-      var colores = ["#e91e63", "#9c27b0", "#ff5722", "#4caf50", "#ff9800"];
-      var color   = colores[Math.floor(Math.random() * colores.length)];
-      var colorear = document.getElementById("colorear");
-      var burbuja  = document.getElementById("idBurbuja");
-
-      colorear.style.background = color;
-      colorear.innerText = "🎤 Escuchando...";
-      burbuja.innerText  = "🎤 Te escucho...";
-
-      fnEscuchar(color);
-    }
-
-    // =========================
-    // RECIBIR TEXTO DESDE APP INVENTOR
-    // Bloque en App Inventor con SpeechRecognizer:
-    // call WebViewer1.GoToUrl
-    //   url "javascript:fnTextoDesdeApp('" & result & "')"
-    // =========================
-    function fnTextoDesdeApp(texto) {
-      console.log("Texto desde App Inventor: " + texto);
-      document.getElementById("idUsuario").value = texto;
-      var colorear = document.getElementById("colorear");
-      colorear.style.background = "#4caf50";
-      colorear.innerText = "🎤 " + texto;
-      setTimeout(function() {
-        colorear.style.background = "#0077cc";
-        colorear.innerText = "🤳 ¡Agitame!";
-      }, 2000);
-      fnResponder(texto);
-    }
-
-    // =========================
-    // BOTÓN VOLVER (header)
-    // =========================
-    function fnVolver() {
-      if (document.getElementById("idBuscadorFrame").style.display === "block") {
-        fnCerrarFrame();
-      } else if (history.length > 1) {
-        history.back();
-      } else {
-        window.location.href = "#inicio";
-      }
-    }
 
     // =========================
     // SALUDO INICIAL
