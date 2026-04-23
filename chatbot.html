@@ -64,8 +64,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       min-height: 40px;
     }
-
-    /* Colores: violet, pink, blue */
     #colorear {
       height: 300px;
       background-color: blue;
@@ -79,7 +77,6 @@
       color: white;
       transition: background 0.5s ease;
     }
-
     #idAreaChat {
       background: teal;
       border-radius: 12px;
@@ -116,70 +113,31 @@
       cursor: pointer;
       flex: 1;
     }
-
-    /* Frame búsqueda */
-    #idBuscadorFrame {
-      display: none;
-      width: 100%;
-    }
-    #btnCerrarFrame {
-      margin: 8px 0;
-      padding: 12px;
-      background: #0077cc;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      width: 100%;
-      cursor: pointer;
-    }
-    #idFrame {
-      width: 100%;
-      height: 75vh;
-      border: none;
-      border-radius: 8px;
-    }
   </style>
 </head>
 <body>
 
   <div data-role="page" id="inicio">
 
-    <!-- Header sin botón Volver -->
     <div data-role="header" data-theme="b">
       <h1>✨ Mi Chat Bot</h1>
     </div>
 
     <div data-role="content">
 
-      <!-- Contenido principal -->
-      <div id="idContenido">
+      <div id="idAsistente">🧞</div>
+      <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
 
-        <div id="idAsistente">🧞</div>
-        <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
+      <div id="colorear">🤳 ¡Agitame!</div>
 
-        <!-- Caja agitador: violet, pink, blue -->
-        <div id="colorear">🤳 ¡Agitame!</div>
-
-        <div id="idAreaChat">
-          <h3>🔍 ¿Qué querés buscar?</h3>
-          <input type="search" id="idUsuario"
-                 placeholder="Escribí sin necesidad de http://" />
-          <div class="btn-fila">
-            <button id="idBotonIr">🔎 Buscar</button>
-            <button id="idBotonMic">🎤 Hablar</button>
-          </div>
+      <div id="idAreaChat">
+        <h3>🔍 ¿Qué querés buscar?</h3>
+        <input type="search" id="idUsuario"
+               placeholder="Escribí sin necesidad de http://" />
+        <div class="btn-fila">
+          <button id="idBotonIr">🔎 Buscar</button>
+          <button id="idBotonMic">🎤 Hablar</button>
         </div>
-
-      </div>
-
-      <!-- Google en iframe con botón volver -->
-      <div id="idBuscadorFrame">
-        <button id="btnCerrarFrame" onclick="fnCerrarFrame()">
-          ← Volver al Chat Bot
-        </button>
-        <iframe id="idFrame" src=""></iframe>
       </div>
 
     </div>
@@ -193,44 +151,39 @@
   <script>
 
     // =========================
-    // AGITADOR 
+    // AGITADOR DESDE APP INVENTOR
+    // Bloque: call WebViewer1.GoToUrl url "javascript:fnAgitador()"
     // =========================
     function fnAgitador() {
       console.log("Agitado!");
-
       var colores = ["violet", "pink", "blue"];
       var color   = colores[Math.floor(Math.random() * colores.length)];
-
       var colorear = document.getElementById("colorear");
       var burbuja  = document.getElementById("idBurbuja");
-
       colorear.style.background = color;
       colorear.innerText = "🎨 " + color.toUpperCase() + "!";
       burbuja.innerText  = "🎨 Color: " + color;
-
-      // Vuelve a Violeta después de 3 segundos
       setTimeout(function () {
-        colorear.style.background = "violet";
+        colorear.style.background = "blue";
         colorear.innerText = "🤳 ¡Agitame!";
       }, 3000);
     }
 
     // =========================
     // RECIBIR TEXTO DESDE APP INVENTOR
+    // Bloque: call WebViewer1.GoToUrl
+    //   url join "javascript:fnTextoDesdeApp('" result "')"
     // =========================
     function fnTextoDesdeApp(texto) {
       console.log("Desde App Inventor: " + texto);
       document.getElementById("idUsuario").value = texto;
-
       var colorear = document.getElementById("colorear");
       colorear.style.background = "violet";
       colorear.innerText = "🎤 " + texto;
-
       setTimeout(function () {
         colorear.style.background = "blue";
         colorear.innerText = "🤳 ¡Agitame!";
       }, 2000);
-
       fnResponder(texto);
     }
 
@@ -291,32 +244,14 @@
         document.getElementById("idBurbuja").innerText = respuesta;
         fnHablar("Buscando " + texto + " en Google");
         setTimeout(function() {
-          fnAbrirFrame("https://www.google.com/search?q=" +
-                        encodeURIComponent(texto));
+          window.location.href = "https://www.google.com/search?q=" +
+                                  encodeURIComponent(texto);
         }, 1200);
         return;
       }
 
       document.getElementById("idBurbuja").innerText = respuesta;
       fnHablar(respuesta);
-    }
-
-    // =========================
-    // ABRIR GOOGLE EN IFRAME
-    // =========================
-    function fnAbrirFrame(url) {
-      document.getElementById("idContenido").style.display = "none";
-      document.getElementById("idBuscadorFrame").style.display = "block";
-      document.getElementById("idFrame").src = url;
-    }
-
-    // =========================
-    // CERRAR IFRAME
-    // =========================
-    function fnCerrarFrame() {
-      document.getElementById("idBuscadorFrame").style.display = "none";
-      document.getElementById("idContenido").style.display = "block";
-      document.getElementById("idFrame").src = "";
     }
 
     // =========================
@@ -359,14 +294,44 @@
       var burbuja  = document.getElementById("idBurbuja");
       var colorear = document.getElementById("colorear");
 
-      burbuja.innerText = "🎤 Usá el botón de micrófono en App Inventor para hablar.";
-      colorear.style.background = "pink";
-      colorear.innerText = "🎤 Hablá en App Inventor";
+      burbuja.innerText = "🎤 Escuchando...";
+      colorear.style.background = "violet";
+      colorear.innerText = "🎤 Escuchando...";
 
-      setTimeout(function () {
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        burbuja.innerText = "Usá el micrófono de App Inventor 🎤";
+        setTimeout(function() {
+          colorear.style.background = "blue";
+          colorear.innerText = "🤳 ¡Agitame!";
+        }, 2000);
+        return;
+      }
+
+      var recognition = new SR();
+      recognition.lang = "es-AR";
+      recognition.interimResults = false;
+
+      recognition.onresult = function(event) {
+        var texto = event.results[0][0].transcript;
+        document.getElementById("idUsuario").value = texto;
+        fnResponder(texto);
         colorear.style.background = "blue";
         colorear.innerText = "🤳 ¡Agitame!";
-      }, 3000);
+      };
+
+      recognition.onerror = function() {
+        burbuja.innerText = "No te escuché. Intentá de nuevo.";
+        colorear.style.background = "blue";
+        colorear.innerText = "🤳 ¡Agitame!";
+      };
+
+      recognition.onend = function() {
+        colorear.style.background = "blue";
+        colorear.innerText = "🤳 ¡Agitame!";
+      };
+
+      recognition.start();
     });
 
     // =========================
