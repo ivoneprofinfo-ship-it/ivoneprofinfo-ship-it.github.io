@@ -41,8 +41,6 @@
       text-align: center;
       background: #f5f5f5;
     }
-
-    /* Asistente */
     #idAsistente {
       font-size: 60px;
       margin: 10px 0 0;
@@ -64,8 +62,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       min-height: 40px;
     }
-
-    /* Caja que cambia de color */
     #colorear {
       height: 120px;
       background-color: #0077cc;
@@ -79,8 +75,6 @@
       color: white;
       transition: background 0.5s ease;
     }
-
-    /* Buscador */
     #idAreaChat {
       background: teal;
       border-radius: 12px;
@@ -117,7 +111,6 @@
       cursor: pointer;
       flex: 1;
     }
-
     #btnVolver {
       padding: 8px 16px;
       border: none;
@@ -140,14 +133,11 @@
 
     <div data-role="content">
 
-      <!-- Asistente animado -->
       <div id="idAsistente">🧞</div>
       <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
 
-      <!-- Caja que cambia de color al agitar -->
       <div id="colorear">🤳 ¡Agitame!</div>
 
-      <!-- Buscador -->
       <div id="idAreaChat">
         <h3>🔍 ¿Qué querés buscar?</h3>
         <input type="search" id="idUsuario" placeholder="Escribí sin necesidad de http://" />
@@ -167,6 +157,7 @@
   </div>
 
   <script>
+
     // ========== ASISTENTE RESPUESTAS BASICAS ==========
     function fnResponder(texto) {
       texto = texto.toLowerCase().trim();
@@ -184,15 +175,15 @@
         var m = ahora.getMinutes().toString().padStart(2, "0");
         respuesta = "⏰ Son las " + h + ":" + m + " hs";
 
-      } else if (texto.includes("fecha") || texto.includes("día") || texto.includes("hoy")) {
-        var dias   = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
-        var meses  = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-        respuesta  = "📅 Hoy es " + dias[ahora.getDay()] + " " + ahora.getDate() + " de " + meses[ahora.getMonth()] + " de " + ahora.getFullYear();
+      } else if (texto.includes("fecha") || texto.includes("dia") || texto.includes("hoy")) {
+        var dias  = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+        var meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+        respuesta = "📅 Hoy es " + dias[ahora.getDay()] + " " + ahora.getDate() + " de " + meses[ahora.getMonth()] + " de " + ahora.getFullYear();
 
-      } else if (texto.includes("cómo estás") || texto.includes("como estas")) {
+      } else if (texto.includes("como estas") || texto.includes("cómo estás")) {
         respuesta = "¡Muy bien gracias! 😊 Listo para ayudarte.";
 
-      } else if (texto.includes("nombre") || texto.includes("quién eres") || texto.includes("quien eres")) {
+      } else if (texto.includes("nombre") || texto.includes("quien eres") || texto.includes("quién eres")) {
         respuesta = "Soy tu asistente 🧞 ¡Preguntame lo que quieras!";
 
       } else if (texto.includes("gracias")) {
@@ -207,97 +198,123 @@
         respuesta = chistes[Math.floor(Math.random() * chistes.length)];
 
       } else {
-        // Si no entiende, busca en Google
         respuesta = "Buscando \"" + texto + "\" en Google... 🔍";
         setTimeout(function() {
-          fnAbrirUrl("https://www.google.com/search?q=" + encodeURIComponent(texto));
+          window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(texto);
         }, 1500);
       }
 
       if (respuesta) {
-        $("#idBurbuja").text(respuesta);
+        document.getElementById("idBurbuja").innerText = respuesta;
         fnHablar(respuesta);
       }
     }
 
-    // ========== VOZ SINTETIZADA (el bot habla) ==========
+    // ========== VOZ SINTETIZADA ==========
     function fnHablar(texto) {
       if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
         var utterance = new SpeechSynthesisUtterance(texto);
         utterance.lang = "es-AR";
         utterance.rate = 1;
-        speechSynthesis.speak(utterance);
+        window.speechSynthesis.speak(utterance);
       }
     }
 
     // ========== BUSCADOR ==========
-    $("#idBotonIr").on("click", function () {
-      var texto = $("#idUsuario").val().trim();
+    document.getElementById("idBotonIr").addEventListener("click", function () {
+      var texto = document.getElementById("idUsuario").value.trim();
       if (texto === "") return;
       fnResponder(texto);
     });
 
-    function fnAbrirUrl(url) {
-      window.location.href = url;
-    }
-
-    function fnBuscar(texto) {
-      if (texto.startsWith("http://") || texto.startsWith("https://")) {
-        fnAbrirUrl(texto);
-      } else {
-        fnAbrirUrl("https://www.google.com/search?q=" + encodeURIComponent(texto));
-      }
-    }
-
     // ========== MICROFONO ==========
-    $("#idBotonMic").on("click", function () {
+    document.getElementById("idBotonMic").addEventListener("click", function () {
       fnEscuchar();
     });
 
     function fnEscuchar() {
-      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        $("#idBurbuja").text("Tu navegador no soporta el micrófono 😔");
+      var colorear = document.getElementById("colorear");
+      var burbuja  = document.getElementById("idBurbuja");
+
+      // Intenta usar SpeechRecognition del navegador
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (!SR) {
+        // Si no soporta micrófono avisa pero no bloquea
+        burbuja.innerText = "🎤 Micrófono no disponible en este navegador. Escribí tu consulta.";
+        colorear.style.background = "#e91e63";
+        colorear.innerText = "⌨️ Escribí abajo";
+        setTimeout(function() {
+          colorear.style.background = "#0077cc";
+          colorear.innerText = "🤳 ¡Agitame!";
+        }, 3000);
         return;
       }
-      var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      var recognition = new SpeechRecognition();
+
+      var recognition = new SR();
       recognition.lang = "es-AR";
       recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
 
-      $("#idBurbuja").text("🎤 Escuchando...");
-      $("#colorear").text("🎤 Escuchando...").css("background", "#9c27b0");
+      burbuja.innerText = "🎤 Escuchando...";
+      colorear.style.background = "#9c27b0";
+      colorear.innerText = "🎤 Escuchando...";
 
       recognition.onresult = function (event) {
         var texto = event.results[0][0].transcript;
         console.log("Escuché: " + texto);
-        $("#idUsuario").val(texto);
+        document.getElementById("idUsuario").value = texto;
         fnResponder(texto);
-        $("#colorear").text("🤳 ¡Agitame!").css("background", "#0077cc");
+        colorear.style.background = "#0077cc";
+        colorear.innerText = "🤳 ¡Agitame!";
       };
 
       recognition.onerror = function (event) {
-        $("#idBurbuja").text("No te escuché bien 😅 Intentá de nuevo.");
-        $("#colorear").text("🤳 ¡Agitame!").css("background", "#0077cc");
+        console.log("Error mic: " + event.error);
+        burbuja.innerText = "No te escuché bien 😅 Intentá de nuevo.";
+        colorear.style.background = "#0077cc";
+        colorear.innerText = "🤳 ¡Agitame!";
       };
 
-      recognition.start();
+      recognition.onend = function() {
+        colorear.style.background = "#0077cc";
+        colorear.innerText = "🤳 ¡Agitame!";
+      };
+
+      try {
+        recognition.start();
+      } catch(e) {
+        burbuja.innerText = "Error al iniciar el micrófono 😔";
+      }
     }
 
-    // ========== AGITADOR (llamado desde App Inventor) ==========
+    // ========== AGITADOR llamado desde App Inventor ==========
+    // En App Inventor el bloque debe decir:
+    // call WebViewer1.GoToUrl url "javascript:fnAgitador()"
     function fnAgitador() {
-      console.log("Teléfono agitado");
+      console.log("Telefono agitado");
 
       var _colores = ["#e91e63", "#9c27b0", "#ff5722", "#4caf50", "#ff9800"];
-      var _color   = _colores[parseInt(Math.random() * _colores.length)];
+      var _random  = Math.floor(Math.random() * _colores.length);
+      var _color   = _colores[_random];
 
-      $("#colorear").css("background", _color).text("🎤 Escuchando...");
-      $("#idBurbuja").text("🎤 Te escucho...");
+      var colorear = document.getElementById("colorear");
+      var burbuja  = document.getElementById("idBurbuja");
 
+      // Cambia el color inmediatamente
+      colorear.style.background = _color;
+      colorear.innerText = "🎤 Escuchando...";
+      burbuja.innerText = "🎤 Te escucho...";
+
+      // Intenta abrir el micrófono
       fnEscuchar();
 
+      // Vuelve al color original después de 5 segundos
       setTimeout(function () {
-        $("#colorear").css("background", "#0077cc").text("🤳 ¡Agitame!");
-      }, 4000);
+        colorear.style.background = "#0077cc";
+        colorear.innerText = "🤳 ¡Agitame!";
+      }, 5000);
     }
 
     // ========== BOTON VOLVER ==========
@@ -309,15 +326,17 @@
       }
     }
 
-    // Saludo inicial con voz
-    $(document).ready(function () {
-      var hora = new Date().getHours();
-      var saludo = hora < 12 ? "¡Buenos días! ☀️" : hora < 18 ? "¡Buenas tardes! 🌤️" : "¡Buenas noches! 🌙";
+    // ========== SALUDO INICIAL ==========
+    window.addEventListener("load", function () {
       setTimeout(function () {
-        $("#idBurbuja").text(saludo + " Soy tu asistente 🧞 ¿En qué te ayudo?");
+        var hora   = new Date().getHours();
+        var saludo = hora < 12 ? "¡Buenos días! ☀️" : hora < 18 ? "¡Buenas tardes! 🌤️" : "¡Buenas noches! 🌙";
+        var msg    = saludo + " Soy tu asistente 🧞 ¿En qué te ayudo?";
+        document.getElementById("idBurbuja").innerText = msg;
         fnHablar(saludo + " Soy tu asistente. ¿En qué te ayudo?");
       }, 1000);
     });
+
   </script>
 
 </body>
