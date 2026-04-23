@@ -11,35 +11,35 @@
 
   <style>
     .ui-header {
-      background-color: #0077cc !important;
-      border-color: #005fa3 !important;
+      background-color: blue !important;
+      border-color: blue !important;
       height: 60px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .ui-header h1 {
-      color: #ffffff !important;
+      color: white !important;
       font-size: 22px;
       margin: 0;
     }
     .ui-footer {
-      background-color: #0077cc !important;
-      border-color: #005fa3 !important;
+      background-color: blue !important;
+      border-color: blue !important;
       height: 60px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .ui-footer h4 {
-      color: #ffffff !important;
+      color: white !important;
       font-size: 13px;
       margin: 0;
     }
     .ui-content {
       padding: 15px;
       text-align: center;
-      background: #f5f5f5;
+      background: whitesmoke;
       min-height: calc(100vh - 120px);
       box-sizing: border-box;
     }
@@ -60,7 +60,7 @@
       margin: 8px auto;
       max-width: 90%;
       font-size: 16px;
-      color: #333;
+      color: black;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       min-height: 40px;
     }
@@ -120,22 +120,21 @@
   <div data-role="page" id="inicio">
 
     <div data-role="header" data-theme="b">
-      <h1>✨ Mi Chat Bot</h1>
+      <h1>Mi Chat Bot</h1>
     </div>
 
     <div data-role="content">
 
       <div id="idAsistente">🧞</div>
-      <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
+      <div id="idBurbuja">Hola. Soy tu asistente.</div>
 
-      <div id="colorear">🤳 ¡Agitame!</div>
+      <div id="colorear">Agitame</div>
 
       <div id="idAreaChat">
-        <h3>🔍 ¿Qué querés buscar?</h3>
-        <input type="search" id="idUsuario"
-               placeholder="Escribí sin necesidad de http://" />
+        <h3>¿Qué querés decir?</h3>
+        <input type="search" id="idUsuario" placeholder="Escribí acá" />
         <div class="btn-fila">
-          <button id="idBotonIr">🔎 Buscar</button>
+          <button id="idBotonIr">Buscar</button>
           <button id="idBotonMic">🎤 Hablar</button>
         </div>
       </div>
@@ -150,100 +149,92 @@
 
   <script>
 
-    // =========================
-    // AGITADOR DESDE APP INVENTOR
-    // Bloque: call WebViewer1.GoToUrl url "javascript:fnAgitador()"
-    // =========================
+    // AGITADOR - solo cambia color, no muestra nada en la burbuja
     function fnAgitador() {
-      console.log("Agitado!");
-      var colores = ["violet", "pink", "blue"];
-      var color   = colores[Math.floor(Math.random() * colores.length)];
+      console.log("Agitado");
+      var colores = ["lightgreen", "blue", "violet"];
+      var color = colores[Math.floor(Math.random() * colores.length)];
       var colorear = document.getElementById("colorear");
-      var burbuja  = document.getElementById("idBurbuja");
+
       colorear.style.background = color;
-      colorear.innerText = "🎨 " + color.toUpperCase() + "!";
-      burbuja.innerText  = "🎨 Color: " + color;
+      colorear.innerText = color.toUpperCase();
+
       setTimeout(function () {
         colorear.style.background = "blue";
-        colorear.innerText = "🤳 ¡Agitame!";
+        colorear.innerText = "Agitame";
       }, 3000);
     }
 
-    // =========================
-    // RECIBIR TEXTO DESDE APP INVENTOR
-    // Bloque: call WebViewer1.GoToUrl
-    //   url join "javascript:fnTextoDesdeApp('" result "')"
-    // =========================
+    // RECIBE TEXTO DESDE APP INVENTOR
     function fnTextoDesdeApp(texto) {
       console.log("Desde App Inventor: " + texto);
       document.getElementById("idUsuario").value = texto;
+
       var colorear = document.getElementById("colorear");
       colorear.style.background = "violet";
-      colorear.innerText = "🎤 " + texto;
+      colorear.innerText = "Escuchando...";
+
+      fnResponder(texto);
+
       setTimeout(function () {
         colorear.style.background = "blue";
-        colorear.innerText = "🤳 ¡Agitame!";
-      }, 2000);
-      fnResponder(texto);
+        colorear.innerText = "Agitame";
+      }, 3000);
     }
 
-    // =========================
     // RESPUESTAS DEL ASISTENTE
-    // =========================
     function fnResponder(texto) {
       texto = texto.toLowerCase().trim();
       var respuesta = "";
       var ahora = new Date();
 
-      if (texto.includes("hola") || texto.includes("buenos") || texto.includes("buen")) {
+      if (texto.indexOf("hola") >= 0 || texto.indexOf("buenos") >= 0 || texto.indexOf("buen") >= 0) {
         var hora = ahora.getHours();
         if (hora >= 6 && hora < 12) {
-          respuesta = "¡Buenos días! ☀️ ¿En qué te ayudo?";
+          respuesta = "Buenos días. ¿En qué te ayudo?";
         } else if (hora >= 12 && hora < 18) {
-          respuesta = "¡Buenas tardes! 🌤️ ¿En qué te ayudo?";
+          respuesta = "Buenas tardes. ¿En qué te ayudo?";
         } else {
-          respuesta = "¡Buenas noches! 🌙 ¿En qué te ayudo?";
+          respuesta = "Buenas noches. ¿En qué te ayudo?";
         }
 
-      } else if (texto.includes("hora")) {
+      } else if (texto.indexOf("hora") >= 0) {
         var h = ahora.getHours();
         var m = ahora.getMinutes().toString().padStart(2, "0");
-        respuesta = "⏰ Son las " + h + ":" + m + " hs";
+        respuesta = "Son las " + h + ":" + m;
 
-      } else if (texto.includes("fecha") || texto.includes("dia") ||
-                 texto.includes("día") || texto.includes("hoy")) {
-        var dias  = ["domingo","lunes","martes","miércoles",
-                     "jueves","viernes","sábado"];
+      } else if (texto.indexOf("fecha") >= 0 || texto.indexOf("dia") >= 0 ||
+                 texto.indexOf("día") >= 0 || texto.indexOf("hoy") >= 0) {
+        var dias  = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
         var meses = ["enero","febrero","marzo","abril","mayo","junio",
                      "julio","agosto","septiembre","octubre","noviembre","diciembre"];
-        respuesta = "📅 Hoy es " + dias[ahora.getDay()] + " " +
+        respuesta = "Hoy es " + dias[ahora.getDay()] + " " +
                     ahora.getDate() + " de " + meses[ahora.getMonth()] +
                     " de " + ahora.getFullYear();
 
-      } else if (texto.includes("como estas") || texto.includes("cómo estás") ||
-                 texto.includes("como te va")) {
-        respuesta = "¡Muy bien gracias! 😊 Listo para ayudarte.";
+      } else if (texto.indexOf("como estas") >= 0 || texto.indexOf("cómo estás") >= 0) {
+        respuesta = "Estoy bien. Listo para ayudarte.";
 
-      } else if (texto.includes("nombre") || texto.includes("quien eres") ||
-                 texto.includes("quién eres")) {
-        respuesta = "Soy tu asistente 🧞 ¡Preguntame lo que quieras!";
+      } else if (texto.indexOf("nombre") >= 0 || texto.indexOf("quien eres") >= 0 ||
+                 texto.indexOf("quién eres") >= 0) {
+        respuesta = "Soy tu asistente.";
 
-      } else if (texto.includes("gracias")) {
-        respuesta = "¡De nada! 😄 Para eso estoy.";
+      } else if (texto.indexOf("gracias") >= 0) {
+        respuesta = "Un placer.";
 
-      } else if (texto.includes("chiste")) {
+      } else if (texto.indexOf("chiste") >= 0) {
         var chistes = [
-          "¿Por qué los pájaros vuelan hacia el sur? Porque es muy lejos para caminar 😂",
-          "¿Qué le dice un techo a otro techo? Techo de menos 😄",
-          "¿Por qué el libro de matemáticas estaba triste? Tenía demasiados problemas 😅"
+          "¿Por qué los pájaros vuelan hacia el sur? Porque es muy lejos para caminar.",
+          "¿Qué le dice un techo a otro techo? Techo de menos.",
+          "¿Por qué el libro de matemáticas estaba triste? Tenía demasiados problemas."
         ];
         respuesta = chistes[Math.floor(Math.random() * chistes.length)];
 
       } else {
-        respuesta = "Buscando \"" + texto + "\" en Google... 🔍";
+        respuesta = "Buscando " + texto + " en Google...";
         document.getElementById("idBurbuja").innerText = respuesta;
         fnHablar("Buscando " + texto + " en Google");
-        setTimeout(function() {
+        setTimeout(function () {
           window.location.href = "https://www.google.com/search?q=" +
                                   encodeURIComponent(texto);
         }, 1200);
@@ -254,9 +245,7 @@
       fnHablar(respuesta);
     }
 
-    // =========================
     // VOZ SINTETIZADA
-    // =========================
     function fnHablar(texto) {
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
@@ -267,13 +256,11 @@
       }
     }
 
-    // =========================
     // BOTÓN BUSCAR
-    // =========================
     document.getElementById("idBotonIr").addEventListener("click", function () {
       var texto = document.getElementById("idUsuario").value.trim();
-      if (texto === "") {
-        document.getElementById("idBurbuja").innerText = "Escribí algo para buscar.";
+      if (texto == "") {
+        document.getElementById("idBurbuja").innerText = "Escribí algo.";
         return;
       }
       fnResponder(texto);
@@ -287,64 +274,23 @@
       }
     });
 
-    // =========================
-    // BOTÓN MICRÓFONO
-    // =========================
+    // BOTÓN HABLAR
     document.getElementById("idBotonMic").addEventListener("click", function () {
-      var burbuja  = document.getElementById("idBurbuja");
-      var colorear = document.getElementById("colorear");
-
-      burbuja.innerText = "🎤 Escuchando...";
-      colorear.style.background = "violet";
-      colorear.innerText = "🎤 Escuchando...";
-
-      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) {
-        burbuja.innerText = "Usá el micrófono de App Inventor 🎤";
-        setTimeout(function() {
-          colorear.style.background = "blue";
-          colorear.innerText = "🤳 ¡Agitame!";
-        }, 2000);
-        return;
-      }
-
-      var recognition = new SR();
-      recognition.lang = "es-AR";
-      recognition.interimResults = false;
-
-      recognition.onresult = function(event) {
-        var texto = event.results[0][0].transcript;
-        document.getElementById("idUsuario").value = texto;
-        fnResponder(texto);
-        colorear.style.background = "blue";
-        colorear.innerText = "🤳 ¡Agitame!";
-      };
-
-      recognition.onerror = function() {
-        burbuja.innerText = "No te escuché. Intentá de nuevo.";
-        colorear.style.background = "blue";
-        colorear.innerText = "🤳 ¡Agitame!";
-      };
-
-      recognition.onend = function() {
-        colorear.style.background = "blue";
-        colorear.innerText = "🤳 ¡Agitame!";
-      };
-
-      recognition.start();
+      document.getElementById("idBurbuja").innerText = "Presioná el botón micrófono de la app.";
+      document.getElementById("colorear").style.background = "lightgreen";
+      document.getElementById("colorear").innerText = "Esperando...";
+      setTimeout(function() {
+        document.getElementById("colorear").style.background = "blue";
+        document.getElementById("colorear").innerText = "Agitame";
+      }, 3000);
     });
 
-    // =========================
     // SALUDO INICIAL
-    // =========================
     window.addEventListener("load", function () {
       setTimeout(function () {
-        var hora = new Date().getHours();
-        var saludo = hora < 12 ? "¡Buenos días! ☀️" :
-                     hora < 18 ? "¡Buenas tardes! 🌤️" : "¡Buenas noches! 🌙";
-        var msg = saludo + " Soy tu asistente 🧞 ¿En qué te ayudo?";
-        document.getElementById("idBurbuja").innerText = msg;
-        fnHablar(saludo + " Soy tu asistente. ¿En qué te ayudo?");
+        document.getElementById("idBurbuja").innerText =
+          "Hola. Soy tu asistente. ¿En qué te ayudo?";
+        fnHablar("Hola. Soy tu asistente. ¿En qué te ayudo?");
       }, 1000);
     });
 
