@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Buscador</title>
+  <title>Mi App</title>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
@@ -29,6 +29,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 20px;
     }
     .ui-footer h4 {
       color: #ffffff !important;
@@ -40,18 +41,16 @@
       text-align: center;
     }
 
-    /* Area chat */
     #idAreaChat {
       background: teal;
       border-radius: 10px;
       padding: 15px;
       box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-      margin-top: 20px;
+      margin-bottom: 15px;
     }
     #idAreaChat h2 {
       color: white;
-      font-size: 18px;
-      margin-bottom: 10px;
+      margin-top: 0;
     }
     #idUsuario {
       width: 100%;
@@ -62,8 +61,14 @@
       margin-bottom: 10px;
       box-sizing: border-box;
     }
-    #idBotonIr, #idBotonMic {
-      padding: 10px 20px;
+    .btn-fila {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-fila button {
+      padding: 10px 18px;
       border: none;
       border-radius: 8px;
       background: white;
@@ -71,33 +76,45 @@
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      margin: 5px;
     }
-    #idBotonIr:active, #idBotonMic:active {
+    .btn-fila button:active {
       background: #e0e0e0;
     }
 
-    /* Area colorear al agitar */
     #colorear {
       height: 300px;
       background-color: #eeeeee;
       border: 1px solid #ccc;
       border-radius: 8px;
-      margin-top: 20px;
+      margin-top: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 24px;
       font-weight: bold;
       color: #333;
+      transition: background 0.4s ease;
     }
 
-    /* Mensajes */
     #idAreaMensaje {
-      margin-top: 15px;
-      font-size: 15px;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
       color: #333;
       min-height: 30px;
+      background: #f0f0f0;
+      border-radius: 8px;
+    }
+
+    #btnVolver {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: white;
+      color: #0077cc;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -106,45 +123,45 @@
   <div data-role="page" id="inicio">
 
     <div data-role="header" data-theme="b">
-      <h1>Mi App</h1>
+      <h1>Mi ChatBot</h1>
     </div>
 
     <div data-role="content">
 
-      <!-- Area de mensajes -->
-      <div id="idAreaMensaje"></div>
-
-      <!-- Buscador -->
+      <!-- Área de búsqueda -->
       <div id="idAreaChat">
-        <h2>Escribí acá</h2>
-        <input type="search" id="idUsuario" placeholder="Palabra o URL..." />
-        <br>
-        <button id="idBotonIr">IR</button>
-        <button id="idBotonMic">🎤 Mic</button>
+        <h2>🔍 Buscador</h2>
+        <input type="search" id="idUsuario" placeholder="Escribí una palabra o URL..." />
+        <div class="btn-fila">
+          <button id="idBotonIr">🔎 IR</button>
+          <button id="idBotonMic">🎤 Mic</button>
+        </div>
       </div>
 
-      <!-- Sensor agitar -->
-      <div id="colorear">
-        ¡Agitame!
-      </div>
+      <!-- Mensaje reconocimiento de voz -->
+      <div id="idAreaMensaje">Agitá para escuchar o escribí algo...</div>
+
+      <!-- Caja que cambia de color al agitar -->
+      <div id="colorear">¡Agitame!</div>
 
     </div>
 
     <div data-role="footer" data-theme="b">
-      <h4>Desarrollado con App Inventor</h4>
+      <button id="btnVolver" onclick="fnVolver()">← Volver</button>
+      <h4>Mi ChatBot</h4>
     </div>
 
   </div>
 
   <script>
-    // ======= BUSCADOR =======
-    document.getElementById("idBotonIr").onclick = function() {
-      var texto = document.getElementById("idUsuario").value.trim();
+    // ========== BUSCADOR ==========
+    document.getElementById("idBotonIr").onclick = function () {
+      fnBuscar();
+    };
 
-      if (texto === "") {
-        document.getElementById("idAreaMensaje").innerHTML = "⚠️ Escribí algo primero";
-        return;
-      }
+    function fnBuscar() {
+      var texto = document.getElementById("idUsuario").value.trim();
+      if (texto === "") return;
 
       var url;
       if (texto.startsWith("http://") || texto.startsWith("https://")) {
@@ -152,22 +169,43 @@
       } else {
         url = "https://www.google.com/search?q=" + encodeURIComponent(texto);
       }
-
       window.location.href = url;
-    };
-
-    // ======= MICROFONO =======
-    document.getElementById("idBotonMic").onclick = function() {
-      escuchar({ termino: fnEscuchado });
-    };
-
-    function fnEscuchado(texto) {
-      console.log("Escuchado: " + texto);
-      document.getElementById("idUsuario").value = texto;
-      document.getElementById("idAreaMensaje").innerHTML = "🎤 Escuché: " + texto;
     }
 
-    // ======= SENSOR AGITAR (llamado desde App Inventor) =======
+    // ========== MICROFONO ==========
+    document.getElementById("idBotonMic").onclick = function () {
+      fnEscuchar();
+    };
+
+    function fnEscuchar() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        document.getElementById("idAreaMensaje").innerText = "Tu navegador no soporta el micrófono.";
+        return;
+      }
+
+      var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      var recognition = new SpeechRecognition();
+      recognition.lang = "es-AR";
+      recognition.interimResults = false;
+
+      document.getElementById("idAreaMensaje").innerText = "🎤 Escuchando...";
+
+      recognition.onresult = function (event) {
+        var texto = event.results[0][0].transcript;
+        console.log("Escuché: " + texto);
+        document.getElementById("idUsuario").value = texto;
+        document.getElementById("idAreaMensaje").innerText = "Escuché: " + texto;
+        fnBuscar();
+      };
+
+      recognition.onerror = function (event) {
+        document.getElementById("idAreaMensaje").innerText = "Error al escuchar: " + event.error;
+      };
+
+      recognition.start();
+    }
+
+    // ========== AGITADOR ==========
     function fnAgitador() {
       console.log("El teléfono fue agitado");
 
@@ -177,12 +215,24 @@
 
       var colorear = document.getElementById("colorear");
       colorear.style.background = _color;
-      colorear.innerHTML = "¡Color: " + _color + "!";
+      colorear.innerHTML = "🎤 Escuchando...";
+
+      // Activa el micrófono al agitar
+      fnEscuchar();
 
       setTimeout(function () {
         colorear.style.background = "#eeeeee";
         colorear.innerHTML = "¡Agitame!";
-      }, 2000);
+      }, 4000);
+    }
+
+    // ========== BOTON VOLVER ==========
+    function fnVolver() {
+      if (history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = "about:blank";
+      }
     }
   </script>
 
