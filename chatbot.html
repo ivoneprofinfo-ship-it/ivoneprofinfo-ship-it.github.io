@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Chat Bot</title>
+
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
@@ -16,11 +17,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
     .ui-header h1 {
       color: #ffffff !important;
       font-size: 22px;
       margin: 0;
+    }
+    .ui-header .ui-btn-left {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      background: white !important;
+      color: #0077cc !important;
+      border: none !important;
+      border-radius: 8px !important;
+      font-weight: bold;
     }
     .ui-footer {
       background-color: #0077cc !important;
@@ -40,6 +52,8 @@
       padding: 15px;
       text-align: center;
       background: #f5f5f5;
+      min-height: calc(100vh - 120px);
+      box-sizing: border-box;
     }
     #idAsistente {
       font-size: 60px;
@@ -62,8 +76,10 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       min-height: 40px;
     }
+
+    /* ✅ id="colorear" con height 300px como pide el profesor */
     #colorear {
-      height: 120px;
+      height: 300px;
       background-color: #0077cc;
       border-radius: 12px;
       margin: 10px auto;
@@ -75,6 +91,7 @@
       color: white;
       transition: background 0.5s ease;
     }
+
     #idAreaChat {
       background: teal;
       border-radius: 12px;
@@ -111,16 +128,6 @@
       cursor: pointer;
       flex: 1;
     }
-    #btnVolver {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
-      background: white;
-      color: #0077cc;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -128,6 +135,8 @@
   <div data-role="page" id="inicio">
 
     <div data-role="header" data-theme="b">
+      <a href="#" onclick="fnVolver()" 
+         class="ui-btn ui-btn-left ui-btn-inline ui-mini">← Volver</a>
       <h1>✨ Mi Chat Bot</h1>
     </div>
 
@@ -136,11 +145,13 @@
       <div id="idAsistente">🧞</div>
       <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
 
+      <!-- ✅ id="colorear" con style.background como pide el profesor -->
       <div id="colorear">🤳 ¡Agitame!</div>
 
       <div id="idAreaChat">
         <h3>🔍 ¿Qué querés buscar?</h3>
-        <input type="search" id="idUsuario" placeholder="Escribí sin necesidad de http://" />
+        <input type="search" id="idUsuario" 
+               placeholder="Escribí sin necesidad de http://" />
         <div class="btn-fila">
           <button id="idBotonIr">🔎 Buscar</button>
           <button id="idBotonMic">🎤 Hablar</button>
@@ -150,7 +161,6 @@
     </div>
 
     <div data-role="footer" data-theme="b">
-      <button id="btnVolver" onclick="fnVolver()">← Volver</button>
       <h4>Mi Chat Bot 2026</h4>
     </div>
 
@@ -158,7 +168,9 @@
 
   <script>
 
-    // ========== ASISTENTE RESPUESTAS BASICAS ==========
+    // =========================
+    // RESPUESTAS DEL ASISTENTE
+    // =========================
     function fnResponder(texto) {
       texto = texto.toLowerCase().trim();
       var respuesta = "";
@@ -166,24 +178,34 @@
 
       if (texto.includes("hola") || texto.includes("buenos") || texto.includes("buen")) {
         var hora = ahora.getHours();
-        if (hora >= 6 && hora < 12)       respuesta = "¡Buenos días! ☀️ ¿En qué te ayudo?";
-        else if (hora >= 12 && hora < 18) respuesta = "¡Buenas tardes! 🌤️ ¿En qué te ayudo?";
-        else                               respuesta = "¡Buenas noches! 🌙 ¿En qué te ayudo?";
+        if (hora >= 6 && hora < 12) {
+          respuesta = "¡Buenos días! ☀️ ¿En qué te ayudo?";
+        } else if (hora >= 12 && hora < 18) {
+          respuesta = "¡Buenas tardes! 🌤️ ¿En qué te ayudo?";
+        } else {
+          respuesta = "¡Buenas noches! 🌙 ¿En qué te ayudo?";
+        }
 
       } else if (texto.includes("hora")) {
         var h = ahora.getHours();
         var m = ahora.getMinutes().toString().padStart(2, "0");
         respuesta = "⏰ Son las " + h + ":" + m + " hs";
 
-      } else if (texto.includes("fecha") || texto.includes("dia") || texto.includes("hoy")) {
+      } else if (texto.includes("fecha") || texto.includes("dia") || 
+                 texto.includes("día") || texto.includes("hoy")) {
         var dias  = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
-        var meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-        respuesta = "📅 Hoy es " + dias[ahora.getDay()] + " " + ahora.getDate() + " de " + meses[ahora.getMonth()] + " de " + ahora.getFullYear();
+        var meses = ["enero","febrero","marzo","abril","mayo","junio",
+                     "julio","agosto","septiembre","octubre","noviembre","diciembre"];
+        respuesta = "📅 Hoy es " + dias[ahora.getDay()] + " " + 
+                    ahora.getDate() + " de " + meses[ahora.getMonth()] + 
+                    " de " + ahora.getFullYear();
 
-      } else if (texto.includes("como estas") || texto.includes("cómo estás")) {
+      } else if (texto.includes("como estas") || texto.includes("cómo estás") || 
+                 texto.includes("como te va")) {
         respuesta = "¡Muy bien gracias! 😊 Listo para ayudarte.";
 
-      } else if (texto.includes("nombre") || texto.includes("quien eres") || texto.includes("quién eres")) {
+      } else if (texto.includes("nombre") || texto.includes("quien eres") || 
+                 texto.includes("quién eres")) {
         respuesta = "Soy tu asistente 🧞 ¡Preguntame lo que quieras!";
 
       } else if (texto.includes("gracias")) {
@@ -191,7 +213,7 @@
 
       } else if (texto.includes("chiste")) {
         var chistes = [
-          "¿Por qué los pájaros vuelan hacia el sur? ¡Porque es muy lejos para caminar! 😂",
+          "¿Por qué los pájaros vuelan hacia el sur? Porque es muy lejos para caminar 😂",
           "¿Qué le dice un techo a otro techo? Techo de menos 😄",
           "¿Por qué el libro de matemáticas estaba triste? Tenía demasiados problemas 😅"
         ];
@@ -199,20 +221,24 @@
 
       } else {
         respuesta = "Buscando \"" + texto + "\" en Google... 🔍";
+        document.getElementById("idBurbuja").innerText = respuesta;
+        fnHablar("Buscando " + texto + " en Google");
         setTimeout(function() {
-          window.location.href = "https://www.google.com/search?q=" + encodeURIComponent(texto);
-        }, 1500);
+          window.location.href = "https://www.google.com/search?q=" + 
+                                  encodeURIComponent(texto);
+        }, 1200);
+        return;
       }
 
-      if (respuesta) {
-        document.getElementById("idBurbuja").innerText = respuesta;
-        fnHablar(respuesta);
-      }
+      document.getElementById("idBurbuja").innerText = respuesta;
+      fnHablar(respuesta);
     }
 
-    // ========== VOZ SINTETIZADA ==========
+    // =========================
+    // VOZ SINTETIZADA
+    // =========================
     function fnHablar(texto) {
-      if ('speechSynthesis' in window) {
+      if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
         var utterance = new SpeechSynthesisUtterance(texto);
         utterance.lang = "es-AR";
@@ -221,28 +247,43 @@
       }
     }
 
-    // ========== BUSCADOR ==========
+    // =========================
+    // BOTÓN BUSCAR
+    // =========================
     document.getElementById("idBotonIr").addEventListener("click", function () {
       var texto = document.getElementById("idUsuario").value.trim();
-      if (texto === "") return;
+      if (texto === "") {
+        document.getElementById("idBurbuja").innerText = "Escribí algo para buscar.";
+        return;
+      }
       fnResponder(texto);
     });
 
-    // ========== MICROFONO ==========
+    // Enter en el input
+    document.getElementById("idUsuario").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        var texto = document.getElementById("idUsuario").value.trim();
+        if (texto !== "") fnResponder(texto);
+      }
+    });
+
+    // =========================
+    // BOTÓN MICRÓFONO
+    // =========================
     document.getElementById("idBotonMic").addEventListener("click", function () {
       fnEscuchar();
     });
 
-    function fnEscuchar() {
+    // =========================
+    // FUNCIÓN ESCUCHAR
+    // =========================
+    function fnEscuchar(colorEscucha) {
       var colorear = document.getElementById("colorear");
       var burbuja  = document.getElementById("idBurbuja");
-
-      // Intenta usar SpeechRecognition del navegador
       var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SR) {
-        // Si no soporta micrófono avisa pero no bloquea
-        burbuja.innerText = "🎤 Micrófono no disponible en este navegador. Escribí tu consulta.";
+        burbuja.innerText = "🎤 Este navegador no permite el micrófono. Escribí tu consulta.";
         colorear.style.background = "#e91e63";
         colorear.innerText = "⌨️ Escribí abajo";
         setTimeout(function() {
@@ -258,7 +299,9 @@
       recognition.maxAlternatives = 1;
 
       burbuja.innerText = "🎤 Escuchando...";
-      colorear.style.background = "#9c27b0";
+
+      // ✅ colorear.style.background como pide el profesor
+      colorear.style.background = colorEscucha || "#9c27b0";
       colorear.innerText = "🎤 Escuchando...";
 
       recognition.onresult = function (event) {
@@ -272,7 +315,17 @@
 
       recognition.onerror = function (event) {
         console.log("Error mic: " + event.error);
-        burbuja.innerText = "No te escuché bien 😅 Intentá de nuevo.";
+        if (event.error === "not-allowed") {
+          burbuja.innerText = "No diste permiso al micrófono.";
+        } else if (event.error === "no-speech") {
+          burbuja.innerText = "No escuché ninguna voz. Intentá de nuevo.";
+        } else if (event.error === "audio-capture") {
+          burbuja.innerText = "No se encontró micrófono en el dispositivo.";
+        } else if (event.error === "network") {
+          burbuja.innerText = "Problema de red con el micrófono.";
+        } else {
+          burbuja.innerText = "No te escuché bien. Intentá de nuevo.";
+        }
         colorear.style.background = "#0077cc";
         colorear.innerText = "🤳 ¡Agitame!";
       };
@@ -284,54 +337,67 @@
 
       try {
         recognition.start();
-      } catch(e) {
-        burbuja.innerText = "Error al iniciar el micrófono 😔";
+      } catch (e) {
+        burbuja.innerText = "Error al iniciar el micrófono.";
+        colorear.style.background = "#0077cc";
+        colorear.innerText = "🤳 ¡Agitame!";
       }
     }
 
-    // ========== AGITADOR llamado desde App Inventor ==========
+    // =========================
+    // AGITADOR DESDE APP INVENTOR
     // En App Inventor el bloque debe decir:
     // call WebViewer1.GoToUrl url "javascript:fnAgitador()"
+    // =========================
     function fnAgitador() {
-      console.log("Telefono agitado");
+      console.log("Teléfono agitado");
 
-      var _colores = ["#e91e63", "#9c27b0", "#ff5722", "#4caf50", "#ff9800"];
-      var _random  = Math.floor(Math.random() * _colores.length);
-      var _color   = _colores[_random];
+      var colores = ["#e91e63", "#9c27b0", "#ff5722", "#4caf50", "#ff9800"];
+      var color   = colores[Math.floor(Math.random() * colores.length)];
 
       var colorear = document.getElementById("colorear");
       var burbuja  = document.getElementById("idBurbuja");
 
-      // Cambia el color inmediatamente
-      colorear.style.background = _color;
+      // ✅ colorear.style.background = color como pide el profesor
+      colorear.style.background = color;
       colorear.innerText = "🎤 Escuchando...";
-      burbuja.innerText = "🎤 Te escucho...";
+      burbuja.innerText  = "🎤 Te escucho...";
 
-      // Intenta abrir el micrófono
-      fnEscuchar();
-
-      // Vuelve al color original después de 5 segundos
-      setTimeout(function () {
-        colorear.style.background = "#0077cc";
-        colorear.innerText = "🤳 ¡Agitame!";
-      }, 5000);
+      fnEscuchar(color);
     }
 
-    // ========== BOTON VOLVER ==========
+    // =========================
+    // APP INVENTOR ENVÍA TEXTO
+    // Si usás SpeechRecognizer nativo de App Inventor:
+    // call WebViewer1.GoToUrl url "javascript:fnTextoDesdeApp('" & result & "')"
+    // =========================
+    function fnTextoDesdeApp(texto) {
+      document.getElementById("idUsuario").value = texto;
+      fnResponder(texto);
+    }
+
+    // =========================
+    // BOTÓN VOLVER
+    // =========================
     function fnVolver() {
-      if (history.length > 1) {
+      if (window.location.href.indexOf("google.com") !== -1) {
+        window.location.href = "#inicio";
+      } else if (history.length > 1) {
         history.back();
       } else {
-        window.location.href = "about:blank";
+        window.location.href = "#inicio";
       }
     }
 
-    // ========== SALUDO INICIAL ==========
+    // =========================
+    // SALUDO INICIAL
+    // =========================
     window.addEventListener("load", function () {
       setTimeout(function () {
-        var hora   = new Date().getHours();
-        var saludo = hora < 12 ? "¡Buenos días! ☀️" : hora < 18 ? "¡Buenas tardes! 🌤️" : "¡Buenas noches! 🌙";
-        var msg    = saludo + " Soy tu asistente 🧞 ¿En qué te ayudo?";
+        var hora = new Date().getHours();
+        var saludo = hora < 12 ? "¡Buenos días! ☀️" : 
+                     hora < 18 ? "¡Buenas tardes! 🌤️" : "¡Buenas noches! 🌙";
+        var msg = saludo + " Soy tu asistente 🧞 ¿En qué te ayudo?";
         document.getElementById("idBurbuja").innerText = msg;
         fnHablar(saludo + " Soy tu asistente. ¿En qué te ayudo?");
       }, 1000);
