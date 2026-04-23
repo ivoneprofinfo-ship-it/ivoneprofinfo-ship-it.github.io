@@ -76,8 +76,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       min-height: 40px;
     }
-
-    /* ✅ id="colorear" con height 300px como pide el profesor */
     #colorear {
       height: 300px;
       background-color: #0077cc;
@@ -91,7 +89,6 @@
       color: white;
       transition: background 0.5s ease;
     }
-
     #idAreaChat {
       background: teal;
       border-radius: 12px;
@@ -128,6 +125,30 @@
       cursor: pointer;
       flex: 1;
     }
+
+    /* Frame de búsqueda */
+    #idBuscadorFrame {
+      display: none;
+      width: 100%;
+    }
+    #btnCerrarFrame {
+      margin: 8px 0;
+      padding: 12px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+    }
+    #idFrame {
+      width: 100%;
+      height: 75vh;
+      border: none;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -135,27 +156,39 @@
   <div data-role="page" id="inicio">
 
     <div data-role="header" data-theme="b">
-      <a href="#" onclick="fnVolver()" 
+      <a href="#" onclick="fnVolver()"
          class="ui-btn ui-btn-left ui-btn-inline ui-mini">← Volver</a>
       <h1>✨ Mi Chat Bot</h1>
     </div>
 
     <div data-role="content">
 
-      <div id="idAsistente">🧞</div>
-      <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
+      <!-- Contenido principal -->
+      <div id="idContenido">
 
-      <!-- ✅ id="colorear" con style.background como pide el profesor -->
-      <div id="colorear">🤳 ¡Agitame!</div>
+        <div id="idAsistente">🧞</div>
+        <div id="idBurbuja">¡Hola! Soy tu asistente. Agitá el teléfono o usá el micrófono.</div>
 
-      <div id="idAreaChat">
-        <h3>🔍 ¿Qué querés buscar?</h3>
-        <input type="search" id="idUsuario" 
-               placeholder="Escribí sin necesidad de http://" />
-        <div class="btn-fila">
-          <button id="idBotonIr">🔎 Buscar</button>
-          <button id="idBotonMic">🎤 Hablar</button>
+        <div id="colorear">🤳 ¡Agitame!</div>
+
+        <div id="idAreaChat">
+          <h3>🔍 ¿Qué querés buscar?</h3>
+          <input type="search" id="idUsuario"
+                 placeholder="Escribí sin necesidad de http://" />
+          <div class="btn-fila">
+            <button id="idBotonIr">🔎 Buscar</button>
+            <button id="idBotonMic">🎤 Hablar</button>
+          </div>
         </div>
+
+      </div>
+
+      <!-- Google adentro con botón volver -->
+      <div id="idBuscadorFrame">
+        <button id="btnCerrarFrame" onclick="fnCerrarFrame()">
+          ← Volver al Chat Bot
+        </button>
+        <iframe id="idFrame" src=""></iframe>
       </div>
 
     </div>
@@ -191,20 +224,21 @@
         var m = ahora.getMinutes().toString().padStart(2, "0");
         respuesta = "⏰ Son las " + h + ":" + m + " hs";
 
-      } else if (texto.includes("fecha") || texto.includes("dia") || 
+      } else if (texto.includes("fecha") || texto.includes("dia") ||
                  texto.includes("día") || texto.includes("hoy")) {
-        var dias  = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+        var dias  = ["domingo","lunes","martes","miércoles",
+                     "jueves","viernes","sábado"];
         var meses = ["enero","febrero","marzo","abril","mayo","junio",
                      "julio","agosto","septiembre","octubre","noviembre","diciembre"];
-        respuesta = "📅 Hoy es " + dias[ahora.getDay()] + " " + 
-                    ahora.getDate() + " de " + meses[ahora.getMonth()] + 
+        respuesta = "📅 Hoy es " + dias[ahora.getDay()] + " " +
+                    ahora.getDate() + " de " + meses[ahora.getMonth()] +
                     " de " + ahora.getFullYear();
 
-      } else if (texto.includes("como estas") || texto.includes("cómo estás") || 
+      } else if (texto.includes("como estas") || texto.includes("cómo estás") ||
                  texto.includes("como te va")) {
         respuesta = "¡Muy bien gracias! 😊 Listo para ayudarte.";
 
-      } else if (texto.includes("nombre") || texto.includes("quien eres") || 
+      } else if (texto.includes("nombre") || texto.includes("quien eres") ||
                  texto.includes("quién eres")) {
         respuesta = "Soy tu asistente 🧞 ¡Preguntame lo que quieras!";
 
@@ -220,18 +254,37 @@
         respuesta = chistes[Math.floor(Math.random() * chistes.length)];
 
       } else {
+        // Busca en Google dentro del iframe
         respuesta = "Buscando \"" + texto + "\" en Google... 🔍";
         document.getElementById("idBurbuja").innerText = respuesta;
         fnHablar("Buscando " + texto + " en Google");
         setTimeout(function() {
-          window.location.href = "https://www.google.com/search?q=" + 
-                                  encodeURIComponent(texto);
+          fnAbrirFrame("https://www.google.com/search?q=" +
+                        encodeURIComponent(texto));
         }, 1200);
         return;
       }
 
       document.getElementById("idBurbuja").innerText = respuesta;
       fnHablar(respuesta);
+    }
+
+    // =========================
+    // ABRIR BÚSQUEDA EN IFRAME
+    // =========================
+    function fnAbrirFrame(url) {
+      document.getElementById("idContenido").style.display = "none";
+      document.getElementById("idBuscadorFrame").style.display = "block";
+      document.getElementById("idFrame").src = url;
+    }
+
+    // =========================
+    // CERRAR IFRAME Y VOLVER
+    // =========================
+    function fnCerrarFrame() {
+      document.getElementById("idBuscadorFrame").style.display = "none";
+      document.getElementById("idContenido").style.display = "block";
+      document.getElementById("idFrame").src = "";
     }
 
     // =========================
@@ -283,7 +336,7 @@
       var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
       if (!SR) {
-        burbuja.innerText = "🎤 Este navegador no permite el micrófono. Escribí tu consulta.";
+        burbuja.innerText = "🎤 Micrófono no disponible. Escribí tu consulta.";
         colorear.style.background = "#e91e63";
         colorear.innerText = "⌨️ Escribí abajo";
         setTimeout(function() {
@@ -299,8 +352,6 @@
       recognition.maxAlternatives = 1;
 
       burbuja.innerText = "🎤 Escuchando...";
-
-      // ✅ colorear.style.background como pide el profesor
       colorear.style.background = colorEscucha || "#9c27b0";
       colorear.innerText = "🎤 Escuchando...";
 
@@ -316,11 +367,11 @@
       recognition.onerror = function (event) {
         console.log("Error mic: " + event.error);
         if (event.error === "not-allowed") {
-          burbuja.innerText = "No diste permiso al micrófono.";
+          burbuja.innerText = "⚠️ Permiso de micrófono denegado. En App Inventor usá el componente SpeechRecognizer.";
         } else if (event.error === "no-speech") {
           burbuja.innerText = "No escuché ninguna voz. Intentá de nuevo.";
         } else if (event.error === "audio-capture") {
-          burbuja.innerText = "No se encontró micrófono en el dispositivo.";
+          burbuja.innerText = "No se encontró micrófono.";
         } else if (event.error === "network") {
           burbuja.innerText = "Problema de red con el micrófono.";
         } else {
@@ -346,19 +397,16 @@
 
     // =========================
     // AGITADOR DESDE APP INVENTOR
-    // En App Inventor el bloque debe decir:
+    // Bloque en App Inventor:
     // call WebViewer1.GoToUrl url "javascript:fnAgitador()"
     // =========================
     function fnAgitador() {
       console.log("Teléfono agitado");
-
       var colores = ["#e91e63", "#9c27b0", "#ff5722", "#4caf50", "#ff9800"];
       var color   = colores[Math.floor(Math.random() * colores.length)];
-
       var colorear = document.getElementById("colorear");
       var burbuja  = document.getElementById("idBurbuja");
 
-      // ✅ colorear.style.background = color como pide el profesor
       colorear.style.background = color;
       colorear.innerText = "🎤 Escuchando...";
       burbuja.innerText  = "🎤 Te escucho...";
@@ -367,21 +415,30 @@
     }
 
     // =========================
-    // APP INVENTOR ENVÍA TEXTO
-    // Si usás SpeechRecognizer nativo de App Inventor:
-    // call WebViewer1.GoToUrl url "javascript:fnTextoDesdeApp('" & result & "')"
+    // RECIBIR TEXTO DESDE APP INVENTOR
+    // Bloque en App Inventor con SpeechRecognizer:
+    // call WebViewer1.GoToUrl
+    //   url "javascript:fnTextoDesdeApp('" & result & "')"
     // =========================
     function fnTextoDesdeApp(texto) {
+      console.log("Texto desde App Inventor: " + texto);
       document.getElementById("idUsuario").value = texto;
+      var colorear = document.getElementById("colorear");
+      colorear.style.background = "#4caf50";
+      colorear.innerText = "🎤 " + texto;
+      setTimeout(function() {
+        colorear.style.background = "#0077cc";
+        colorear.innerText = "🤳 ¡Agitame!";
+      }, 2000);
       fnResponder(texto);
     }
 
     // =========================
-    // BOTÓN VOLVER
+    // BOTÓN VOLVER (header)
     // =========================
     function fnVolver() {
-      if (window.location.href.indexOf("google.com") !== -1) {
-        window.location.href = "#inicio";
+      if (document.getElementById("idBuscadorFrame").style.display === "block") {
+        fnCerrarFrame();
       } else if (history.length > 1) {
         history.back();
       } else {
@@ -395,7 +452,7 @@
     window.addEventListener("load", function () {
       setTimeout(function () {
         var hora = new Date().getHours();
-        var saludo = hora < 12 ? "¡Buenos días! ☀️" : 
+        var saludo = hora < 12 ? "¡Buenos días! ☀️" :
                      hora < 18 ? "¡Buenas tardes! 🌤️" : "¡Buenas noches! 🌙";
         var msg = saludo + " Soy tu asistente 🧞 ¿En qué te ayudo?";
         document.getElementById("idBurbuja").innerText = msg;
