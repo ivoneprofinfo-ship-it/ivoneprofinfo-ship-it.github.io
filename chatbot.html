@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -150,7 +149,7 @@
 
   <script>
 
-    // AGITADOR - cambia color del cuadro
+    // AGITADOR - solo cambia color, no muestra nada en la burbuja
     function fnAgitador() {
       console.log("Agitado");
       var colores = ["lightgreen", "blue", "violet"];
@@ -164,7 +163,8 @@
       }, 3000);
     }
 
-    // FUNCIÓN ESCUCHADO - pedida por el profesor
+    // FUNCIÓN ESCUCHADO (requerida por el profesor)
+    // En App Inventor usar: javascript:fnEscuchado(' + result + ')
     function fnEscuchado(_textoEscuchado) {
       console.log(_textoEscuchado);
       fnTextoDesdeApp(_textoEscuchado);
@@ -174,13 +174,10 @@
     function fnTextoDesdeApp(texto) {
       console.log("Desde App Inventor: " + texto);
       document.getElementById("idUsuario").value = texto;
-
       var colorear = document.getElementById("colorear");
       colorear.style.background = "violet";
       colorear.innerText = "Escuchando...";
-
       fnResponder(texto);
-
       setTimeout(function () {
         colorear.style.background = "blue";
         colorear.innerText = "Agitame";
@@ -202,12 +199,10 @@
         } else {
           respuesta = "Buenas noches. ¿En qué te ayudo?";
         }
-
       } else if (texto.indexOf("hora") >= 0) {
         var h = ahora.getHours();
         var m = ahora.getMinutes().toString().padStart(2, "0");
         respuesta = "Son las " + h + ":" + m;
-
       } else if (texto.indexOf("fecha") >= 0 || texto.indexOf("dia") >= 0 ||
                  texto.indexOf("día") >= 0 || texto.indexOf("hoy") >= 0) {
         var dias  = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
@@ -216,17 +211,13 @@
         respuesta = "Hoy es " + dias[ahora.getDay()] + " " +
                     ahora.getDate() + " de " + meses[ahora.getMonth()] +
                     " de " + ahora.getFullYear();
-
       } else if (texto.indexOf("como estas") >= 0 || texto.indexOf("cómo estás") >= 0) {
         respuesta = "Estoy bien. Listo para ayudarte.";
-
       } else if (texto.indexOf("nombre") >= 0 || texto.indexOf("quien eres") >= 0 ||
                  texto.indexOf("quién eres") >= 0) {
         respuesta = "Soy tu asistente.";
-
       } else if (texto.indexOf("gracias") >= 0) {
         respuesta = "Un placer.";
-
       } else if (texto.indexOf("chiste") >= 0) {
         var chistes = [
           "¿Por qué los pájaros vuelan hacia el sur? Porque es muy lejos para caminar.",
@@ -234,7 +225,6 @@
           "¿Por qué el libro de matemáticas estaba triste? Tenía demasiados problemas."
         ];
         respuesta = chistes[Math.floor(Math.random() * chistes.length)];
-
       } else {
         respuesta = "Buscando " + texto + " en Google...";
         document.getElementById("idBurbuja").innerText = respuesta;
@@ -256,8 +246,6 @@
         var utterance = new SpeechSynthesisUtterance(texto);
         utterance.lang = "es-AR";
         utterance.rate = 1;
-        utterance.pitch = 1;
-        utterance.volume = 1;
         window.speechSynthesis.speak(utterance);
       }
     }
@@ -294,9 +282,8 @@
     // SALUDO INICIAL
     window.addEventListener("load", function () {
       setTimeout(function () {
-        var msg = "Hola. Soy tu asistente. ¿En qué te ayudo?";
-        document.getElementById("idBurbuja").innerText = msg;
-        fnHablar(msg);
+        document.getElementById("idBurbuja").innerText = "Hola. Soy tu asistente. ¿En qué te ayudo?";
+        fnHablar("Hola. Soy tu asistente. ¿En qué te ayudo?");
       }, 1000);
     });
 
